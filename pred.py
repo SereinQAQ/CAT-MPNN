@@ -93,13 +93,11 @@ reduce_lr = keras.callbacks.ReduceLROnPlateau(
     monitor="val_loss", factor=0.2, patience=3, min_lr=1e-4
 )
 
-# 构建模型
 model = camodels.Finalmodel(batchsize=batchsize, num_heads=8, d_model=16)
 
 # pretrained_model_path = "best_mpnn_model.h5"
 # model = keras.models.load_model(pretrained_model_path)
 
-# 检查每一层是否加载成功
 # for layer in model.layers:
 #     try:
 #         # 获取层的权重
@@ -134,11 +132,11 @@ for layer in model.layers:
         layer.trainable = False
     if layer.name.startswith("transformer_encoder_readout"):
         layer.trainable = False
-# 确保回调知道模型
+
 reduce_lr.set_model(model)
 tensorboard_callback.set_model(model)
 checkpoint_callback.set_model(model)
-# 自定义训练循环参数
+
 epochs = 30
 train_loss_metric = tf.keras.metrics.Mean(name="train_loss")
 val_loss_metric = tf.keras.metrics.Mean(name="val_loss")
@@ -156,11 +154,10 @@ history = {
     "val_r2": [],
 }
 
-# 训练循环
+
 # for epoch in range(epochs):
 #     print(f"Epoch {epoch + 1}/{epochs}")
 
-#     # 使用 tqdm 显示训练进度
 #     train_dataset = tqdm(traindatasets, desc=f"Epoch {epoch + 1}/{epochs} - Training")
 
 #     for step, (x_batch_train, y_batch_train) in enumerate(train_dataset):
@@ -221,7 +218,6 @@ history = {
 #     reduce_lr.on_epoch_end(epoch, logs)
 #     tensorboard_callback.on_epoch_end(epoch, logs)
 #     checkpoint_callback.on_epoch_end(epoch, logs)
-#     # 记录每个epoch的损失值
 #     history["epoch"].append(epoch + 1)
 #     history["train_loss"].append(train_loss.numpy())
 #     history["val_loss"].append(val_loss.numpy())
@@ -245,7 +241,7 @@ history = {
 #                 RSquared(name="r2"),
 #             ],
 #         )
-# # 使用 TensorFlow Summary API 保存指标日志到 CSV 文件
+
 # history_df = pd.DataFrame(history)
 # history_df.to_csv("training_history.csv", index=False)
 # print(f"Training history saved to training_history.csv")
