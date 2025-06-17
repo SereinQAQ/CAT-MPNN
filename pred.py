@@ -120,11 +120,11 @@ model.compile(
     ],
 )
 checkpoint_callback = ModelCheckpointWithCleanup(
-    filepath="model_epoch_{epoch:02d}.h5",  # 保存路径
-    monitor="val_loss",  # 监控的指标
-    save_best_only=True,  # 仅保存最佳模型
-    mode="min",  # 监控指标的变化方向
-    max_to_keep=3,  # 仅保留最近的3个模型
+    filepath="model_epoch_{epoch:02d}.h5", 
+    monitor="val_loss",
+    save_best_only=True,
+    mode="min",
+    max_to_keep=3,
 )
 
 for layer in model.layers:
@@ -168,7 +168,6 @@ history = {
 #         grads = tape.gradient(loss_value, model.trainable_weights)
 #         model.optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
-#         # 更新训练指标
 #         train_loss_metric.update_state(loss_value)
 #         model.compiled_metrics.update_state(y_batch_train, logits)
 
@@ -209,7 +208,6 @@ history = {
 #     for name, result in val_metrics.items():
 #         print(f"Validation {name}: {result:.4f}")
 
-#     # 调用回调函数
 #     logs = {
 #         "val_loss": val_loss.numpy(),
 #         **{f"val_{name}": result for name, result in val_metrics.items()},
