@@ -104,16 +104,16 @@ reduce_lr = keras.callbacks.ReduceLROnPlateau(
     monitor="val_loss", factor=0.2, patience=3, min_lr=1e-4
 )
 
-# 构建模型
+
 model = camodels.Finalmodel(batchsize=batchsize, num_heads=8, d_model=16)
 
 # pretrained_model_path = "best_mpnn_model.h5"
 # model = keras.models.load_model(pretrained_model_path)
 
-# 检查每一层是否加载成功
+
 # for layer in model.layers:
 #     try:
-#         # 获取层的权重
+#     
 #         weights = layer.get_weights()
 #         print(
 #             f"Layer '{layer.name}' loaded successfully with weights shape: {[w.shape for w in weights]}"
@@ -133,11 +133,11 @@ model.compile(
     ],
 )
 checkpoint_callback = ModelCheckpointWithCleanup(
-    filepath="model_epoch_{epoch:02d}.h5",  # 保存路径
-    monitor="val_loss",  # 监控的指标
-    save_best_only=True,  # 仅保存最佳模型
-    mode="min",  # 监控指标的变化方向
-    max_to_keep=3,  # 仅保留最近的3个模型
+    filepath="model_epoch_{epoch:02d}.h5",
+    monitor="val_loss",
+    save_best_only=True,
+    mode="min",
+    max_to_keep=3,
 )
 
 for layer in model.layers:
@@ -145,11 +145,11 @@ for layer in model.layers:
         layer.trainable = False
     if layer.name.startswith("transformer_encoder_readout"):
         layer.trainable = False
-# 确保回调知道模型
+
 reduce_lr.set_model(model)
 tensorboard_callback.set_model(model)
 checkpoint_callback.set_model(model)
-# 自定义训练循环参数
+
 epochs = 30
 train_loss_metric = tf.keras.metrics.Mean(name="train_loss")
 val_loss_metric = tf.keras.metrics.Mean(name="val_loss")
@@ -171,7 +171,6 @@ history = {
 # for epoch in range(epochs):
 #     print(f"Epoch {epoch + 1}/{epochs}")
 
-#     # 使用 tqdm 显示训练进度
 #     train_dataset = tqdm(traindatasets, desc=f"Epoch {epoch + 1}/{epochs} - Training")
 
 #     for step, (x_batch_train, y_batch_train) in enumerate(train_dataset):
@@ -182,7 +181,6 @@ history = {
 #         grads = tape.gradient(loss_value, model.trainable_weights)
 #         model.optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
-#         # 更新训练指标
 #         train_loss_metric.update_state(loss_value)
 #         model.compiled_metrics.update_state(y_batch_train, logits)
 
@@ -223,7 +221,6 @@ history = {
 #     for name, result in val_metrics.items():
 #         print(f"Validation {name}: {result:.4f}")
 
-#     # 调用回调函数
 #     logs = {
 #         "val_loss": val_loss.numpy(),
 #         **{f"val_{name}": result for name, result in val_metrics.items()},
@@ -232,7 +229,7 @@ history = {
 #     reduce_lr.on_epoch_end(epoch, logs)
 #     tensorboard_callback.on_epoch_end(epoch, logs)
 #     checkpoint_callback.on_epoch_end(epoch, logs)
-#     # 记录每个epoch的损失值
+
 #     history["epoch"].append(epoch + 1)
 #     history["train_loss"].append(train_loss.numpy())
 #     history["val_loss"].append(val_loss.numpy())
@@ -256,7 +253,7 @@ history = {
 #                 RSquared(name="r2"),
 #             ],
 #         )
-# # 使用 TensorFlow Summary API 保存指标日志到 CSV 文件
+
 # history_df = pd.DataFrame(history)
 # history_df.to_csv("training_history.csv", index=False)
 # print(f"Training history saved to training_history.csv")
